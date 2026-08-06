@@ -1,0 +1,27 @@
+@mixin card {
+
+    background: $surface;
+
+    border:1px solid $border;
+
+    border-radius:$radius;
+
+    transition:$transition;
+}
+
+@mixin button {
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:$radius-small;
+
+    transition:$transition;
+}
