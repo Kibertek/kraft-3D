@@ -1,8 +1,11 @@
+import { useState } from "react";
+import UploadZone from "@components/UploadZone/UploadZone";
 import Container from "@components/Container/Container";
 import business from "@config/business";
 import styles from "./Hero.module.scss";
 
 function Hero() {
+  const [showUpload, setShowUpload] = useState(false);
   return (
     <section className={styles.hero}>
       <Container>
@@ -23,7 +26,10 @@ function Hero() {
               {business.pricing}
             </p>
 
-            <button className={styles.button}>
+            <button
+            className={styles.button}
+            onClick={() => setShowUpload(true)}
+            >
               Загрузить модель
             </button>
           </div>
@@ -38,6 +44,7 @@ function Hero() {
             <div className={`${styles.ring} ${styles.ringSecond}`} />
           </div>
         </div>
+        {showUpload && <UploadZone />}
       </Container>
     </section>
   );
