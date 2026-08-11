@@ -1,50 +1,52 @@
-import { useState } from "react";
-import UploadZone from "@components/UploadZone/UploadZone";
 import Container from "@components/Container/Container";
-import business from "@config/business";
 import styles from "./Hero.module.scss";
 
 function Hero() {
-  const [showUpload, setShowUpload] = useState(false);
   return (
     <section className={styles.hero}>
+      <div className={styles.glow} />
+
       <Container>
         <div className={styles.content}>
-          <div className={styles.text}>
-            <span className={styles.label}>КРАФТ 3D</span>
+          <div className={styles.info}>
+            <div className={styles.label}>
+              <span />
+              КРАФТ 3D
+            </div>
 
             <h1>
               Фантазия и идея
-              <span> печатается у нас</span>
+              <br />
+              <span>печатаются у нас.</span>
             </h1>
 
             <p className={styles.description}>
-              3D-печать, моделирование и изготовление изделий на заказ.
+              3D-печать, моделирование и изготовление
+              изделий на заказ.
             </p>
 
-            <p className={styles.price}>
-              {business.pricing}
-            </p>
-
-            <button
-            className={styles.button}
-            onClick={() => setShowUpload(true)}
-            >
-              Загрузить модель
+            <button className={styles.button}>
+              Посмотреть работы
+              <span>↓</span>
             </button>
           </div>
 
-          <div className={styles.logo}>
-            <div className={styles.logoCore}>
-              <span>K</span>
-              <span>3D</span>
+          <div className={styles.visual}>
+            <div className={styles.object}>
+              <div className={styles.objectInner}>
+                K<span>3D</span>
+              </div>
             </div>
 
-            <div className={styles.ring} />
-            <div className={`${styles.ring} ${styles.ringSecond}`} />
+            <div className={`${styles.orbit} ${styles.orbitOne}`} />
+            <div className={`${styles.orbit} ${styles.orbitTwo}`} />
           </div>
         </div>
-        {showUpload && <UploadZone />}
+
+        <div className={styles.bottom}>
+          <span>01</span>
+          <span>Идея → форма → изделие</span>
+        </div>
       </Container>
     </section>
   );
