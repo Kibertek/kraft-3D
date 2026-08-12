@@ -2,11 +2,15 @@
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
 
-    "moduleResolution": "bundler",
+    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -22,18 +26,22 @@
     "baseUrl": "./src",
 
     "paths": {
-      "@/*": ["*"],
-      "@components/*": ["components/*"],
-      "@layouts/*": ["layouts/*"],
-      "@pages/*": ["pages/*"],
-      "@styles/*": ["styles/*"],
-      "@assets/*": ["assets/*"],
-      "@features/*": ["features/*"],
-      "@services/*": ["services/*"],
-      "@store/*": ["store/*"],
-      "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"]
-    }
+  "@/*": ["*"],
+  "@components/*": ["components/*"],
+  "@layouts/*": ["layouts/*"],
+  "@pages/*": ["pages/*"],
+  "@styles/*": ["styles/*"],
+  "@assets/*": ["assets/*"],
+  "@features/*": ["features/*"],
+  "@services/*": ["services/*"],
+  "@store/*": ["store/*"],
+  "@utils/*": ["utils/*"],
+  "@types/*": ["types/*"],
+  "@config/*": ["config/*"]
+}
   },
-  "include": ["src"]
+
+  "include": [
+    "src"
+  ]
 }
