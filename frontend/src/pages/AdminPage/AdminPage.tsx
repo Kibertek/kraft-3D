@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "@services/api";
 import styles from "./AdminPage.module.scss";
 
 const sections = [
@@ -9,6 +11,18 @@ const sections = [
 ];
 
 function AdminPage() {
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } finally {
+      navigate("/admin/login", { replace: true });
+    }
+  }
+
   return (
     <main className={styles.page}>
       <aside className={styles.sidebar}>
@@ -31,7 +45,10 @@ function AdminPage() {
 
         <div className={styles.sidebarBottom}>
           <span className={styles.statusDot} />
-          <span>Сервер не подключён</span>
+          <span>Авторизация сервера активна</span>
+          <button type="button" onClick={handleLogout} disabled={isLoggingOut}>
+            {isLoggingOut ? "Выход…" : "Выйти из панели"}
+          </button>
           <Link to="/">← Вернуться на сайт</Link>
         </div>
       </aside>
@@ -42,14 +59,14 @@ function AdminPage() {
             <div className={styles.breadcrumb}>КРАФТ 3D <span>/</span> АДМИНИСТРИРОВАНИЕ</div>
             <h1>Панель управления</h1>
           </div>
-          <div className={styles.previewBadge}>ПРЕДПРОСМОТР ИНТЕРФЕЙСА</div>
+          <div className={styles.previewBadge}>ЭТАП 2 · АВТОРИЗАЦИЯ</div>
         </header>
 
         <div className={styles.notice} role="status">
-          <span className={styles.noticeIcon}>i</span>
+          <span className={styles.noticeIcon}>✓</span>
           <div>
-            <strong>Это первый этап админ-панели</strong>
-            <p>Пока это только интерфейс. Авторизация, сохранение изменений и база данных ещё не подключены, поэтому реальные данные здесь не редактируются.</p>
+            <strong>Доступ теперь проверяется сервером</strong>
+            <p>Вход использует серверную сессию в HttpOnly cookie. Реальные разделы управления и PostgreSQL-данные подключим следующими этапами.</p>
           </div>
         </div>
 
@@ -92,7 +109,7 @@ function AdminPage() {
 
         <footer className={styles.footer}>
           <span>KRAFT 3D MANAGER · ВЕБ-АДМИНИСТРИРОВАНИЕ</span>
-          <span>ЭТАП 1 / ИНТЕРФЕЙС</span>
+          <span>ЭТАП 2 / АВТОРИЗАЦИЯ</span>
         </footer>
       </section>
     </main>
