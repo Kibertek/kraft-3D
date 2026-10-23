@@ -53,3 +53,15 @@ export async function logout(): Promise<void> {
     headers: { "X-CSRF-Token": csrfToken },
   });
 }
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const csrfToken = await getCsrfToken();
+  await request<{ status: string }>("/api/auth/password", {
+    method: "POST",
+    headers: { "X-CSRF-Token": csrfToken },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),
+  });
+}
