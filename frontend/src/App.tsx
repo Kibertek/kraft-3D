@@ -2,7 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import Header from "@components/Header/Header";
 import Main from "@components/Main/Main";
 import SocialLinks from "@components/SocialLinks/SocialLinks";
+import AdminLoginPage from "@pages/AdminLoginPage/AdminLoginPage";
 import AdminPage from "@pages/AdminPage/AdminPage";
+import AdminRoute from "@pages/AdminRoute/AdminRoute";
 
 function HomePage() {
   return (
@@ -18,7 +20,15 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/admin" element={<AdminPage />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminPage />
+          </AdminRoute>
+        }
+      />
     </Routes>
   );
 }
