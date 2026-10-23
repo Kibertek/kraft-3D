@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "@services/api";
+import { changePassword, logout } from "@services/api";
 import styles from "./AdminPage.module.scss";
 
 const sections = [
@@ -13,6 +13,12 @@ const sections = [
 function AdminPage() {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -20,6 +26,28 @@ function AdminPage() {
       await logout();
     } finally {
       navigate("/admin/login", { replace: true });
+    }
+  }
+
+  async function handlePasswordChange(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPasswordMessage("");
+    setPasswordError("");
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Новые пароли не совпадают.");
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      await changePassword(currentPassword, newPassword);
+      setPasswordMessage("Пароль изменён. Выполняется выход из текущей сессии…");
+      setTimeout(() => navigate("/admin/login", { replace: true }), 700);
+    } catch (error) {
+      setPasswordError(error instanceof Error ? error.message : "Не удалось изменить пароль");
+    } finally {
+      setIsChangingPassword(false);
     }
   }
 
@@ -41,6 +69,7 @@ function AdminPage() {
           <a href="#services"><span>◇</span> Услуги</a>
           <a href="#content"><span>≡</span> Тексты и контакты</a>
           <a href="#orders"><span>↗</span> Заказы</a>
+          <a href="#security"><span>⌁</span> Безопасность</a>
         </nav>
 
         <div className={styles.sidebarBottom}>
@@ -106,6 +135,33 @@ function AdminPage() {
             </article>
           ))}
         </div>
+
+        <section className={styles.security} id="security">
+          <div>
+            <p className={styles.eyebrow}>БЕЗОПАСНОСТЬ</p>
+            <h2>Смена пароля</h2>
+            <p>После смены все активные сессии будут отозваны, включая текущую.</p>
+          </div>
+          <form className={styles.securityForm} onSubmit={handlePasswordChange}>
+            <label>
+              Текущий пароль
+              <input type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} required />
+            </label>
+            <label>
+              Новый пароль
+              <input type="password" autoComplete="new-password" minLength={12} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required />
+            </label>
+            <label>
+              Повтор нового пароля
+              <input type="password" autoComplete="new-password" minLength={12} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required />
+            </label>
+            {passwordError && <p className={styles.formError} role="alert">{passwordError}</p>}
+            {passwordMessage && <p className={styles.formSuccess} role="status">{passwordMessage}</p>}
+            <button type="submit" disabled={isChangingPassword}>
+              {isChangingPassword ? "СОХРАНЕНИЕ…" : "ИЗМЕНИТЬ ПАРОЛЬ"}
+            </button>
+          </form>
+        </section>
 
         <footer className={styles.footer}>
           <span>KRAFT 3D MANAGER · ВЕБ-АДМИНИСТРИРОВАНИЕ</span>
