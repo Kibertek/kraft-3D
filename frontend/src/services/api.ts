@@ -24,6 +24,15 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+function resolveImageUrl(url: string): string {
+  if (/^https?:\/\//i.test(url) || !API_URL) return url;
+  return `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
+function resolveGalleryItems(items: GalleryItem[]): GalleryItem[] {
+  return items.map((item) => ({ ...item, image_url: resolveImageUrl(item.image_url) }));
+}
+
 export type AdminUser = {
   id: number;
   username: string;
@@ -79,12 +88,12 @@ export async function changePassword(currentPassword: string, newPassword: strin
   });
 }
 
-export function getGallery(): Promise<GalleryItem[]> {
-  return request<GalleryItem[]>("/api/gallery");
+export async function getGallery(): Promise<GalleryItem[]> {
+  return resolveGalleryItems(await request<GalleryItem[]>("/api/gallery"));
 }
 
-export function getAdminGallery(): Promise<GalleryItem[]> {
-  return request<GalleryItem[]>("/api/admin/gallery");
+export async function getAdminGallery(): Promise<GalleryItem[]> {
+  return resolveGalleryItems(await request<GalleryItem[]>("/api/admin/gallery"));
 }
 
 export async function uploadGalleryImage(file: File): Promise<{ image_path: string; image_url: string }> {
@@ -110,7 +119,8 @@ export async function uploadGalleryImage(file: File): Promise<{ image_path: stri
     throw new Error(message);
   }
 
-  return response.json() as Promise<{ image_path: string; image_url: string }>;
+  const result = (await response.json()) as { image_path: string; image_url: string };
+  return { ...result, image_url: resolveImageUrl(result.image_url) };
 }
 
 export async function createGalleryItem(payload: {
@@ -121,11 +131,13 @@ export async function createGalleryItem(payload: {
   is_published: boolean;
 }): Promise<GalleryItem> {
   const csrfToken = await getCsrfToken();
-  return request<GalleryItem>("/api/admin/gallery", {
-    method: "POST",
-    headers: { "X-CSRF-Token": csrfToken },
-    body: JSON.stringify(payload),
-  });
+  return resolveGalleryItems([
+    await request<GalleryItem>("/api/admin/gallery", {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrfToken },
+      body: JSON.stringify(payload),
+    }),
+  ])[0];
 }
 
 export async function updateGalleryItem(
@@ -133,11 +145,13 @@ export async function updateGalleryItem(
   payload: { title?: string; description?: string; sort_order?: number; is_published?: boolean },
 ): Promise<GalleryItem> {
   const csrfToken = await getCsrfToken();
-  return request<GalleryItem>(`/api/admin/gallery/${id}`, {
-    method: "PATCH",
-    headers: { "X-CSRF-Token": csrfToken },
-    body: JSON.stringify(payload),
-  });
+  return resolveGalleryItems([
+    await request<GalleryItem>(`/api/admin/gallery/${id}`, {
+      method: "PATCH",
+      headers: { "X-CSRF-Token": csrfToken },
+      body: JSON.stringify(payload),
+    }),
+  ])[0];
 }
 
 export async function deleteGalleryItem(id: number): Promise<void> {
