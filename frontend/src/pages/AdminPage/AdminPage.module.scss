@@ -113,7 +113,30 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #e4a23a;
+  background: #54c78a;
+}
+
+.sidebarBottom button {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  background: transparent;
+  color: #aaaab2;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sidebarBottom button:hover:not(:disabled) {
+  border-color: rgba(255, 122, 0, 0.3);
+  color: #fff;
+}
+
+.sidebarBottom button:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }
 
 .sidebarBottom a {
